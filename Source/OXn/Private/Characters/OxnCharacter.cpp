@@ -1,5 +1,6 @@
 #include "Characters/OxnCharacter.h" 
 #include "Camera/CameraComponent.h"
+#include "Data/InputDataConfig.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
@@ -28,10 +29,6 @@ AOxnCharacter::AOxnCharacter()
 void AOxnCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (const auto* const PlayerController = Cast<APlayerController>(Controller))
-		if (auto* const Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-			Subsystem->AddMappingContext(InputMappingContext, 0);
 }
 
 void AOxnCharacter::Tick(float DeltaTime)
@@ -44,11 +41,14 @@ void AOxnCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	if (auto* const EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
-	{
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AOxnCharacter::Look);
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AOxnCharacter::Move);
-	}
+	const auto* const PlayerController = Cast<APlayerController>(Controller);
+	auto const Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+	Subsystem->ClearAllMappings();
+	Subsystem->AddMappingContext(InputMappingContext, 0);
+
+	auto* const EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
+	EnhancedInputComponent->BindAction(InputActions->LookAction, ETriggerEvent::Triggered, this, &AOxnCharacter::Look);
+	EnhancedInputComponent->BindAction(InputActions->MoveAction, ETriggerEvent::Triggered, this, &AOxnCharacter::Move);
 }
 
 void AOxnCharacter::Look(const FInputActionValue& Value)
