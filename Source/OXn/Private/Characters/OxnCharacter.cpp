@@ -5,8 +5,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
+#include "Characters/CharacterEnums.h"
 
-AOxnCharacter::AOxnCharacter()
+AOxnCharacter::AOxnCharacter() : CharacterState(ECharacterState::Idle)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	
@@ -49,6 +50,8 @@ void AOxnCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 	auto* const EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	EnhancedInputComponent->BindAction(InputActions->LookAction, ETriggerEvent::Triggered, this, &AOxnCharacter::Look);
 	EnhancedInputComponent->BindAction(InputActions->MoveAction, ETriggerEvent::Triggered, this, &AOxnCharacter::Move);
+	EnhancedInputComponent->BindAction(InputActions->JumpAction, ETriggerEvent::Started, this, &AOxnCharacter::Jump);
+	EnhancedInputComponent->BindAction(InputActions->JumpAction, ETriggerEvent::Completed, this, &AOxnCharacter::StopJumping);
 }
 
 void AOxnCharacter::Look(const FInputActionValue& Value)
@@ -71,4 +74,11 @@ void AOxnCharacter::Move(const FInputActionValue& Value)
 	
 	AddMovementInput(ForwardDir, InputVec.Y);
 	AddMovementInput(RightDir, InputVec.X);
+}
+
+void AOxnCharacter::SetCharacterState(const ECharacterState Current)
+{
+	const auto Prev = CharacterState;
+	CharacterState = Current;
+	OnCharacterStateChanged.Broadcast(Current, Prev);
 }

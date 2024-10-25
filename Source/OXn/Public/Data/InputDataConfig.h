@@ -15,8 +15,11 @@ class OXN_API UInputDataConfig : public UDataAsset
 	
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    TObjectPtr<UInputAction> LookAction;
-    
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-    TObjectPtr<UInputAction> MoveAction;
+	TObjectPtr<UInputAction> LookAction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UInputAction> MoveAction;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UInputAction> JumpAction;
 };

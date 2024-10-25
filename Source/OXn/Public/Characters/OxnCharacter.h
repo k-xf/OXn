@@ -12,7 +12,9 @@ class UInputComponent;
 class UInputDataConfig;
 class UInputMappingContext;
 class USpringArmComponent;
+enum ECharacterState : uint8;
 
+using FOnCharacterStateChanged = TMulticastDelegate<void(ECharacterState Current, ECharacterState Prev)>;
 
 UCLASS()
 class OXN_API AOxnCharacter : public ACharacter
@@ -21,6 +23,10 @@ class OXN_API AOxnCharacter : public ACharacter
 
 public:
 	AOxnCharacter();
+
+	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
+
+	FOnCharacterStateChanged OnCharacterStateChanged;
 
 protected:
 	virtual void BeginPlay() override;
@@ -32,6 +38,8 @@ protected:
 	void Look(const FInputActionValue& Value);
 	
 	void Move(const FInputActionValue& Value);
+
+	void SetCharacterState(ECharacterState Current);
 	
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
@@ -45,4 +53,6 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UInputDataConfig> InputActions;
+
+	ECharacterState CharacterState;
 };
