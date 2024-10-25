@@ -46,5 +46,5 @@ private:
 	TObjectPtr<UInputAction> LookAction;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-    TObjectPtr<UInputAction> MoveAction;
+	TObjectPtr<UInputAction> MoveAction;
 };
