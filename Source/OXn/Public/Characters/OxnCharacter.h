@@ -12,9 +12,7 @@ class UInputComponent;
 class UInputDataConfig;
 class UInputMappingContext;
 class USpringArmComponent;
-enum ECharacterState : uint8;
-
-using FOnCharacterStateChanged = TMulticastDelegate<void(ECharacterState Current, ECharacterState Prev)>;
+enum class ECharacterState : uint8;
 
 UCLASS()
 class OXN_API AOxnCharacter : public ACharacter
@@ -26,7 +24,10 @@ public:
 
 	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
 
+	using FOnCharacterStateChanged = TMulticastDelegate<void(ECharacterState Current, ECharacterState Prev)>;
 	FOnCharacterStateChanged OnCharacterStateChanged;
+
+	FORCEINLINE const UCameraComponent* GetCameraComponent() const { return Camera.Get(); }
 
 protected:
 	virtual void BeginPlay() override;
@@ -39,8 +40,8 @@ protected:
 	
 	void Move(const FInputActionValue& Value);
 
-	void SetCharacterState(ECharacterState Current);
-	
+	void SetCharacterState(ECharacterState NewState);
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USpringArmComponent> SpringArmComponent;

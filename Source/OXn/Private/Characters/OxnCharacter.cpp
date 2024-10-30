@@ -7,7 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include "Characters/CharacterEnums.h"
 
-AOxnCharacter::AOxnCharacter() : CharacterState(ECharacterState::Idle)
+AOxnCharacter::AOxnCharacter() : CharacterState(ECharacterState::Grounded)
 {
 	PrimaryActorTick.bCanEverTick = true;
 	
@@ -76,9 +76,11 @@ void AOxnCharacter::Move(const FInputActionValue& Value)
 	AddMovementInput(RightDir, InputVec.X);
 }
 
-void AOxnCharacter::SetCharacterState(const ECharacterState Current)
+void AOxnCharacter::SetCharacterState(const ECharacterState NewState)
 {
+	if (CharacterState == NewState) return;
 	const auto Prev = CharacterState;
-	CharacterState = Current;
-	OnCharacterStateChanged.Broadcast(Current, Prev);
+	CharacterState = NewState;
+
+	OnCharacterStateChanged.Broadcast(NewState, Prev);
 }
