@@ -11,19 +11,12 @@ void UOxnAnimInstance::NativeInitializeAnimation()
 		CharacterMovementComponent = Cast<UOxnCharacterMovementComponent>(Character->GetMovementComponent());
 }
 
-void UOxnAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
-{
-	Super::NativeUpdateAnimation(DeltaSeconds);
-
-	if (!CharacterMovementComponent) return;
-	
-	Speed = CharacterMovementComponent->GetHorizontalSpeed();
-	bIsMoving = Speed > 0.f;
-}
-
 void UOxnAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeThreadSafeUpdateAnimation(DeltaSeconds);
 
+	if (!Character || !CharacterMovementComponent) return;
 	
+	Speed = CharacterMovementComponent->GetVelocityXY().SizeSquared() / FMath::Pow(CharacterMovementComponent->GetMaxSpeed(), 2.f) * 100.f;
+	bIsMoving = Speed > 0.f;
 }

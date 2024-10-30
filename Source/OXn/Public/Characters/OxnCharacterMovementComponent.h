@@ -11,5 +11,4 @@ class OXN_API UOxnCharacterMovementComponent : public UCharacterMovementComponen
 
 public:
 	FVector GetVelocityXY() const;
-	float GetHorizontalSpeed(float Scale = 100.f) const;
 };
