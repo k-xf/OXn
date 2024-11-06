@@ -9,5 +9,5 @@ void UHealthBar::NativeConstruct()
 
 void UHealthBar::UpdateBar(float Value)
 {
-	Initialize()
+	Initialize();
 }
