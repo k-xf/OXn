@@ -27,11 +27,6 @@ AOxnCharacter::AOxnCharacter() : CharacterState(ECharacterState::Grounded)
 	Camera->bUsePawnControlRotation = false;
 }
 
-void AOxnCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
 void AOxnCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

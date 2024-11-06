@@ -19,19 +19,18 @@ class OXN_API AOxnCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	using FOnCharacterStateChanged = TMulticastDelegate<void(ECharacterState Current, ECharacterState Prev)>;
+
 public:
 	AOxnCharacter();
 
-	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
-
-	using FOnCharacterStateChanged = TMulticastDelegate<void(ECharacterState Current, ECharacterState Prev)>;
 	FOnCharacterStateChanged OnCharacterStateChanged;
-
+	
+	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
+	
 	FORCEINLINE const UCameraComponent* GetCameraComponent() const { return Camera.Get(); }
 
 protected:
-	virtual void BeginPlay() override;
-
 	virtual void Tick(float DeltaTime) override;
 
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
@@ -39,7 +38,7 @@ protected:
 	void Look(const FInputActionValue& Value);
 	
 	void Move(const FInputActionValue& Value);
-
+	
 	void SetCharacterState(ECharacterState NewState);
 
 private:

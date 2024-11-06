@@ -14,10 +14,10 @@ class OXN_API UOxnAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(Transient, BlueprintReadOnly)
 	TObjectPtr<AOxnCharacter> Character;
 	
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(Transient, BlueprintReadOnly)
 	TObjectPtr<UOxnCharacterMovementComponent> CharacterMovementComponent;
 
 	UPROPERTY(BlueprintReadOnly)
