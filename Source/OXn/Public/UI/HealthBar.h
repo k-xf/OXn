@@ -4,6 +4,9 @@
 #include "Blueprint/UserWidget.h"
 #include "HealthBar.generated.h"
 
+class UHealthComponent;
+class UProgressBar;
+
 UCLASS()
 class OXN_API UHealthBar : public UUserWidget
 {
@@ -11,10 +14,13 @@ class OXN_API UHealthBar : public UUserWidget
 
 protected:
 	virtual void NativeConstruct() override;
-	
+
 private:
 	UPROPERTY(meta=(BindWidget))
-	TObjectPtr<class UProgressBar> HealthBar;
+	TObjectPtr<UProgressBar> HealthBar;
 
-	void UpdateBar(float Value);
+	UPROPERTY(Transient)
+	TObjectPtr<const UHealthComponent> HealthComponent;
+
+	void UpdateBar(float, float);
 };

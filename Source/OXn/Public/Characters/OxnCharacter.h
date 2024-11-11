@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "CharacterBase.h"
 #include "OxnCharacter.generated.h"
 
 // Forward declarations
@@ -15,7 +15,7 @@ class USpringArmComponent;
 enum class ECharacterState : uint8;
 
 UCLASS()
-class OXN_API AOxnCharacter : public ACharacter
+class OXN_API AOxnCharacter : public ACharacterBase
 {
 	GENERATED_BODY()
 

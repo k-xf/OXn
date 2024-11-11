@@ -1,13 +1,18 @@
 #include "UI/HealthBar.h"
-
-#include "Characters/OxnCharacter.h"
+#include "Characters/CharacterBase.h"
+#include "Components/HealthComponent.h"
 #include "Components/ProgressBar.h"
 
 void UHealthBar::NativeConstruct()
 {
+	Super::NativeConstruct();
+	
+	if (const auto* const Player = GetOwningPlayerPawn<ACharacterBase>())
+		if ((HealthComponent = Player->GetHealthComponent()))
+			HealthComponent->OnHealthChanged.AddUObject(this, &UHealthBar::UpdateBar);
 }
 
-void UHealthBar::UpdateBar(float Value)
+void UHealthBar::UpdateBar(const float, const float)
 {
-	Initialize();
+	HealthBar->SetPercent(HealthComponent->GetHealthNormalized());
 }

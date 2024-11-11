@@ -21,10 +21,10 @@ protected:
 	TObjectPtr<UOxnCharacterMovementComponent> CharacterMovementComponent;
 
 	UPROPERTY(BlueprintReadOnly)
-	float Speed;
+	float Speed{};
 	
 	UPROPERTY(BlueprintReadOnly)
-	bool bIsMoving;
+	bool bIsMoving{};
 	
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeThreadSafeUpdateAnimation(float DeltaSeconds) override;

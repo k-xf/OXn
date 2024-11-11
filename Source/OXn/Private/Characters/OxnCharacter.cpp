@@ -30,7 +30,6 @@ AOxnCharacter::AOxnCharacter() : CharacterState(ECharacterState::Grounded)
 void AOxnCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AOxnCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
