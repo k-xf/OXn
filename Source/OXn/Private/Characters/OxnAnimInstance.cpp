@@ -1,23 +1,45 @@
 #include "Characters/OxnAnimInstance.h"
-
-#include "Characters/OxnCharacter.h"
+#include "Characters/CharacterBase.h"
 #include "Characters/OxnCharacterMovementComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UOxnAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 	
-	if ((Character = Cast<AOxnCharacter>(GetOwningActor())))
-		CharacterMovementComponent = Cast<UOxnCharacterMovementComponent>(Character->GetMovementComponent());
+	if ((OwningCharacter = Cast<ACharacterBase>(GetOwningActor())))
+	{
+		OwningCharacter->MovementModeChangedDelegate.AddUniqueDynamic(this, &UOxnAnimInstance::OnMovementModeChanged);
+		CharacterMovementComponent = Cast<UOxnCharacterMovementComponent>(OwningCharacter->GetMovementComponent());
+	}
 }
 
 void UOxnAnimInstance::NativeThreadSafeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeThreadSafeUpdateAnimation(DeltaSeconds);
 
-	if (!Character || !CharacterMovementComponent) return;
+	if (!OwningCharacter || !CharacterMovementComponent) return;
+
+	if (!AnimData.bIsWalking) return;
+
+	const auto Velocity = OwningCharacter->GetVelocity();
+	AnimData.Speed = Velocity.SizeSquared() / FMath::Square(CharacterMovementComponent->GetMaxSpeed()) * 100.f;
 	
-	Speed = CharacterMovementComponent->GetVelocityXY().SizeSquared() / FMath::Pow(CharacterMovementComponent->GetMaxSpeed(), 2.f) * 100.f;
-	bIsMoving = Speed > 0.f;
+	const auto Rotation = OwningCharacter->GetActorRotation();
+	const auto Up = UKismetMathLibrary::GetUpVector(Rotation);
+	const auto Forward = UKismetMathLibrary::GetForwardVector(Rotation);
+	const FVector VelocityXYNormalized = CharacterMovementComponent->GetVelocityXY().GetSafeNormal(UE_SMALL_NUMBER, Forward);
+	const auto Sign = FMath::Sign<float>(FVector::DotProduct(Up, FVector::CrossProduct(Forward, VelocityXYNormalized)));
+	const auto Degrees = UKismetMathLibrary::RadiansToDegrees(FMath::Acos(FVector::DotProduct(Forward, VelocityXYNormalized)));
+	AnimData.Direction = Sign * Degrees;
+}
+
+void UOxnAnimInstance::OnMovementModeChanged(ACharacter* Character, EMovementMode PrevMovementMode, uint8 PreviousCustomMode)
+{
+	const auto MovementMode = CharacterMovementComponent->MovementMode;
+	
+	if (MovementMode == MOVE_Falling)
+		AnimData.bIsVelUp = Character->GetVelocity().Z > 0;
+
+	AnimData.SetMovementMode(MovementMode);
 }
